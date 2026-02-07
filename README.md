@@ -1,39 +1,237 @@
-# Aa2img
+<h1 align="center">aa2img</h1>
+<p align="center">
+  <strong>Convert ASCII/Unicode diagrams into clean SVG and PNG images</strong>
+</p>
+<p align="center">
+  <img src="https://img.shields.io/badge/ruby-%3E%3D%203.2-red.svg" alt="Ruby 3.2+">
+  <img src="https://img.shields.io/badge/output-SVG%20%2F%20PNG-2f855a.svg" alt="Output SVG/PNG">
+  <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License MIT">
+  <a href="https://github.com/ydah/aa2img/actions/workflows/main.yml">
+    <img src="https://github.com/ydah/aa2img/actions/workflows/main.yml/badge.svg" alt="CI">
+  </a>
+</p>
 
-TODO: Delete this and the text below, and describe your gem
+<p align="center">
+  <a href="#features">Features</a> •
+  <a href="#installation">Installation</a> •
+  <a href="#usage">Usage</a> •
+  <a href="#diagram-syntax">Diagram Syntax</a> •
+  <a href="#themes">Themes</a>
+</p>
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/aa2img`. To experiment with that code, run `bin/console` for an interactive prompt.
+---
+
+`aa2img` parses text-based box diagrams and renders them as themed images.
+It is useful for docs, README files, and architecture notes where you want to keep diagrams editable as plain text.
+
+## Features
+
+- Parses both Unicode and ASCII box-drawing styles (`┌─┐ │ └─┘` and `+--+ |  | +--+`)
+- Detects section separators (`├──┤`) inside boxes
+- Detects nested parent-child box structures
+- Renders right-side annotations in `← note` format
+- Handles full-width characters, including Japanese labels
+- Supports `SVG` and `PNG` output
+- Ships with 3 built-in themes: `default`, `blueprint`, `monochrome`
+- Supports vertical label alignment: `top`, `center`, `bottom`
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
+### Requirements
 
-Install the gem and add to the application's Gemfile by executing:
+- Ruby `3.2+`
+- ImageMagick (required only for PNG output)
 
 ```bash
-bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+# macOS
+brew install imagemagick
+
+# Ubuntu / Debian
+sudo apt install imagemagick
 ```
 
-If bundler is not being used to manage dependencies, install the gem by executing:
+### Add to Gemfile
+
+```ruby
+gem "aa2img", github: "ydah/aa2img"
+```
+
+After the gem is published to RubyGems, you can also install it with:
 
 ```bash
-gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+gem install aa2img
 ```
 
 ## Usage
 
-TODO: Write usage instructions here
+### Quick Start (CLI)
+
+1. Create a text diagram file:
+
+```txt
+┌────────────────────────────┐
+│        API Gateway         │
+├────────────────────────────┤
+│        Application         │
+│  ┌──────────────────────┐  │
+│  │       Database       │  │
+│  └──────────────────────┘  │
+└────────────────────────────┘
+```
+
+2. Convert to SVG:
+
+```bash
+aa2img convert diagram.txt output.svg
+```
+
+3. Convert to PNG:
+
+```bash
+aa2img convert diagram.txt output.png --scale 3
+```
+
+### Commands
+
+| Command | Description |
+|---|---|
+| `aa2img convert INPUT_FILE OUTPUT_FILE` | Convert text diagram to image (format inferred from extension) |
+| `aa2img themes` | List available themes |
+| `aa2img preview INPUT_FILE` | Show parsed AST tree for debugging |
+| `aa2img version` | Show version |
+
+### `convert` Options
+
+| Option | Description |
+|---|---|
+| `--theme NAME` | Theme name (`default`, `blueprint`, `monochrome`) |
+| `--scale N` | Scale factor for PNG output (default: `2`) |
+| `--valign POS` | Vertical label alignment (`top`, `center`, `bottom`) |
+
+Notes:
+- Use `-` as `INPUT_FILE` to read from stdin.
+- Output format is inferred from `OUTPUT_FILE` extension (`.svg` or `.png`).
+
+```bash
+# Read from stdin
+cat diagram.txt | aa2img convert - output.svg
+
+# Use blueprint theme
+aa2img convert diagram.txt blueprint.svg --theme blueprint
+
+# Center label alignment
+aa2img convert diagram.txt centered.svg --valign center
+```
+
+### Ruby API
+
+```ruby
+require "aa2img"
+
+aa = <<~AA
+  ┌──────┐
+  │ Test │
+  └──────┘
+AA
+
+# Get SVG string
+svg = Aa2Img.convert(aa, format: :svg, theme: "default", valign: :center)
+
+# Write to file (format inferred from extension)
+Aa2Img.convert_to_file(aa, "diagram.png", theme: "monochrome", scale: 2, valign: :top)
+```
+
+## Diagram Syntax
+
+### Basic Boxes
+
+Unicode:
+
+```txt
+┌──────┐
+│ API  │
+└──────┘
+```
+
+ASCII:
+
+```txt
++------+
+| API  |
++------+
+```
+
+### Sectioned Boxes
+
+```txt
+┌────────────────┐
+│ Presentation   │
+├────────────────┤
+│ Application    │
+├────────────────┤
+│ Infrastructure │
+└────────────────┘
+```
+
+### Annotations
+
+```txt
+┌──────────┐  ← user input
+│  REPL    │
+└──────────┘
+```
+
+## Themes
+
+Built-in themes:
+
+- `default`: balanced light theme
+- `blueprint`: deep-blue blueprint-like style
+- `monochrome`: print-friendly grayscale style
+
+```bash
+aa2img themes
+```
+
+You can also pass a custom theme hash from Ruby:
+
+```ruby
+custom_theme = {
+  "background_color" => "#ffffff",
+  "box_fill" => "#f8fafc",
+  "box_stroke" => "#334155",
+  "text_color" => "#0f172a",
+  "font_family" => "'Noto Sans JP', sans-serif"
+}
+
+svg = Aa2Img.convert(aa, format: :svg, theme: custom_theme)
+```
+
+## Notes
+
+- Current parser behavior is optimized for box/layer diagrams.
+- Annotation detection currently supports right-side `←` markers.
+- `preview --format` is reserved for future expansion; current output is tree-style.
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+```bash
+git clone https://github.com/ydah/aa2img.git
+cd aa2img
+bin/setup
+bundle exec rspec
+```
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+Run the example script:
+
+```bash
+bundle exec ruby examples/basic_usage.rb
+```
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/aa2img.
+Issues and pull requests are welcome at `https://github.com/ydah/aa2img`.
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+[MIT License](LICENSE.txt)
