@@ -7,6 +7,7 @@ module Aa2Img
     desc "convert INPUT_FILE OUTPUT_FILE", "Convert AA text file to image"
     option :theme, type: :string, default: "default", desc: "Theme name"
     option :scale, type: :numeric, default: 2, desc: "PNG scale factor"
+    option :valign, type: :string, default: "top", desc: "Vertical text alignment (top / center / bottom)"
     def convert(input_file, output_file)
       text = if input_file == "-"
                $stdin.read
@@ -15,7 +16,8 @@ module Aa2Img
              end
       Aa2Img.convert_to_file(text, output_file,
                              theme: options[:theme],
-                             scale: options[:scale])
+                             scale: options[:scale],
+                             valign: options[:valign].to_sym)
       puts "✓ #{output_file} generated"
     end
 

@@ -5,7 +5,8 @@ require "nokogiri"
 module Aa2Img
   module Renderer
     class SVGRenderer < Base
-      def render(scene, theme:, **_options)
+      def render(scene, theme:, valign: :top, **_options)
+        @valign = valign
         calculator = Layout::Calculator.new(scene, theme)
         svg_width = calculator.total_width
         svg_height = calculator.total_height
@@ -77,8 +78,29 @@ module Aa2Img
           )
         end
 
-        box.all_labels.each do |label|
-          pos = calc.label_position(label, box)
+        (box.sections || []).each do |section|
+          (section.labels || []).each_with_index do |label, idx|
+            pos = calc.label_position(
+              label, box,
+              section: section,
+              valign: @valign,
+              label_index: idx,
+              label_count: section.labels.size,
+              children: box.children || []
+            )
+            xml.text_(
+              x: pos[:x], y: pos[:y],
+              "text-anchor": "middle",
+              "dominant-baseline": "middle",
+              "font-family": theme.font_family,
+              "font-size": theme.font_size,
+              fill: theme.text_color
+            ) { xml.text label.text }
+          end
+        end
+
+        (box.labels || []).each do |label|
+          pos = calc.label_position(label, box, valign: @valign)
           xml.text_(
             x: pos[:x], y: pos[:y],
             "text-anchor": "middle",

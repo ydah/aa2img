@@ -14,6 +14,9 @@ module Aa2Img
         box_builder = BoxBuilder.new
         boxes = box_builder.detect(@grid, corners)
 
+        nesting_analyzer = NestingAnalyzer.new
+        top_level_boxes = nesting_analyzer.analyze(boxes)
+
         section_detector = SectionDetector.new
         text_extractor = TextExtractor.new
 
@@ -22,7 +25,7 @@ module Aa2Img
           box.sections = sections
 
           sections.each do |section|
-            section.labels = text_extractor.extract_labels(@grid, section, box)
+            section.labels = text_extractor.extract_labels(@grid, section, box, children: box.children)
           end
 
           box.annotations = text_extractor.extract_annotations(@grid, box)
@@ -32,9 +35,6 @@ module Aa2Img
             matching_section&.annotation = ann
           end
         end
-
-        nesting_analyzer = NestingAnalyzer.new
-        top_level_boxes = nesting_analyzer.analyze(boxes)
 
         scene = AST::Scene.new
         scene.width = @grid.width

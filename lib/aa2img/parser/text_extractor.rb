@@ -5,16 +5,21 @@ module Aa2Img
     class TextExtractor
       ANNOTATION_PATTERN = /←\s*(.+)$/
 
-      def extract_labels(grid, section, box)
+      def extract_labels(grid, section, box, children: [])
         labels = []
         (section.top + 1...section.bottom).each do |row|
+          next if row_inside_child?(row, children)
+
           text = extract_row_text(grid, row, box.left + 1, box.right - 1)
           stripped = text.strip
           next if stripped.empty?
           next if all_structural?(stripped)
 
+          cleaned = clean_nested_structural(stripped)
+          next if cleaned.empty?
+
           labels << AST::Label.new(
-            text: stripped,
+            text: cleaned,
             row: row,
             col: calculate_center(box),
             align: :center
@@ -59,6 +64,14 @@ module Aa2Img
 
       def all_structural?(text)
         text.each_char.all? { |ch| CharClassifier.structural?(ch) }
+      end
+
+      def clean_nested_structural(text)
+        text.gsub(/[┌┐└┘├┤┬┴┼─│━═╔╗╚╝╠╣╦╩╬║┏┓┗┛┣┫┳┻╋┃+\-|]/, " ").strip
+      end
+
+      def row_inside_child?(row, children)
+        children.any? { |child| row >= child.top && row <= child.bottom }
       end
     end
   end

@@ -5,10 +5,10 @@ require "tempfile"
 module Aa2Img
   module Renderer
     class PNGRenderer < Base
-      def render(scene, theme:, scale: 2, **_options)
+      def render(scene, theme:, scale: 2, valign: :top, **_options)
         require "mini_magick"
 
-        svg_xml = SVGRenderer.new.render(scene, theme: theme)
+        svg_xml = SVGRenderer.new.render(scene, theme: theme, valign: valign)
 
         Tempfile.create(["aa2img", ".svg"]) do |svg_file|
           svg_file.write(svg_xml)

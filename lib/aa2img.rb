@@ -37,7 +37,7 @@ module Aa2Img
   class Error < StandardError; end
 
   class << self
-    def convert(input, format: :svg, theme: "default", scale: 2)
+    def convert(input, format: :svg, theme: "default", scale: 2, valign: :top)
       grid = Grid.new(input)
       parser = Parser::Orchestrator.new(grid)
       scene = parser.parse
@@ -49,7 +49,7 @@ module Aa2Img
                  else raise ArgumentError, "Unsupported format: #{format}"
                  end
 
-      options = { theme: loaded_theme }
+      options = { theme: loaded_theme, valign: valign.to_sym }
       options[:scale] = scale if format == :png
 
       renderer.render(scene, **options)
