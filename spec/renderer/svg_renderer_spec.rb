@@ -53,4 +53,44 @@ RSpec.describe Aa2Img::Renderer::SVGRenderer do
     svg = renderer.render(scene, theme: blueprint)
     expect(svg).to include("#1A2744")
   end
+
+  describe "valign option" do
+    let(:scene) { parse_fixture("layered_architecture.txt") }
+
+    def label_y_values(svg)
+      doc = Nokogiri::XML(svg)
+      doc.css("text").reject { |t| t.text.include?("←") }
+         .map { |t| [t.text.strip, t["y"].to_f] }
+         .to_h
+    end
+
+    it "shifts labels upward with valign :top" do
+      top_positions = label_y_values(renderer.render(scene, theme: theme, valign: :top))
+      center_positions = label_y_values(renderer.render(scene, theme: theme, valign: :center))
+
+      expect(top_positions["REPL (UI)"]).to be < center_positions["REPL (UI)"]
+      expect(top_positions["Database"]).to be < center_positions["Database"]
+    end
+
+    it "shifts labels downward with valign :bottom" do
+      center_positions = label_y_values(renderer.render(scene, theme: theme, valign: :center))
+      bottom_positions = label_y_values(renderer.render(scene, theme: theme, valign: :bottom))
+
+      expect(center_positions["REPL (UI)"]).to be < bottom_positions["REPL (UI)"]
+      expect(center_positions["Database"]).to be < bottom_positions["Database"]
+    end
+
+    it "keeps labels above nested child box in all alignments" do
+      child_box_rect = Nokogiri::XML(renderer.render(scene, theme: theme))
+                       .css("rect")
+                       .find { |r| r["fill"] == theme.nested_box_fill }
+      child_top_y = child_box_rect["y"].to_f
+
+      %i[top center bottom].each do |valign|
+        positions = label_y_values(renderer.render(scene, theme: theme, valign: valign))
+        expect(positions["Database"]).to be < child_top_y,
+          "valign=#{valign}: Database label y=#{positions["Database"]} should be above child box y=#{child_top_y}"
+      end
+    end
+  end
 end
