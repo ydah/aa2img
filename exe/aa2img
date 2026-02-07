@@ -3,4 +3,4 @@
 
 require "aa2img"
 
-Aa2Img::CLI.start(ARGV)
+AA2img::CLI.start(ARGV)

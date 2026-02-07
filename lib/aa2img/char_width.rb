@@ -2,7 +2,7 @@
 
 require "unicode/display_width"
 
-module Aa2Img
+module AA2img
   module CharWidth
     def self.width(char)
       Unicode::DisplayWidth.of(char)

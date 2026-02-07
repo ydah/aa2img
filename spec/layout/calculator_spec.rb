@@ -1,27 +1,27 @@
 # frozen_string_literal: true
 
-RSpec.describe Aa2Img::Layout::Calculator do
-  let(:theme) { Aa2Img::Theme.new }
+RSpec.describe AA2img::Layout::Calculator do
+  let(:theme) { AA2img::Theme.new }
   let(:cell_height) { theme.metrics["cell_height"] }
   let(:padding) { theme.metrics["padding"] }
 
   def build_scene(width: 40, height: 10)
-    scene = Aa2Img::AST::Scene.new
+    scene = AA2img::AST::Scene.new
     scene.width = width
     scene.height = height
     scene
   end
 
   def make_label(text, row:)
-    Aa2Img::AST::Label.new(text: text, row: row, col: 0, align: :center)
+    AA2img::AST::Label.new(text: text, row: row, col: 0, align: :center)
   end
 
   describe "#label_position with valign" do
     context "section without children" do
       let(:scene) { build_scene }
       let(:calc) { described_class.new(scene, theme) }
-      let(:box) { Aa2Img::AST::Box.new(top: 0, left: 0, bottom: 4, right: 20) }
-      let(:section) { Aa2Img::AST::Section.new(top: 0, bottom: 4) }
+      let(:box) { AA2img::AST::Box.new(top: 0, left: 0, bottom: 4, right: 20) }
+      let(:section) { AA2img::AST::Section.new(top: 0, bottom: 4) }
       let(:label) { make_label("Hello", row: 1) }
 
       it "positions label near section top with valign :top" do
@@ -37,9 +37,9 @@ RSpec.describe Aa2Img::Layout::Calculator do
     context "section with child box" do
       let(:scene) { build_scene }
       let(:calc) { described_class.new(scene, theme) }
-      let(:box) { Aa2Img::AST::Box.new(top: 0, left: 0, bottom: 10, right: 38) }
-      let(:child) { Aa2Img::AST::Box.new(top: 4, left: 3, bottom: 8, right: 33) }
-      let(:section) { Aa2Img::AST::Section.new(top: 0, bottom: 10) }
+      let(:box) { AA2img::AST::Box.new(top: 0, left: 0, bottom: 10, right: 38) }
+      let(:child) { AA2img::AST::Box.new(top: 4, left: 3, bottom: 8, right: 33) }
+      let(:section) { AA2img::AST::Section.new(top: 0, bottom: 10) }
       let(:label) { make_label("Database", row: 1) }
 
       it "keeps label above child box region with valign :top" do
@@ -64,7 +64,7 @@ RSpec.describe Aa2Img::Layout::Calculator do
       end
 
       it "does not affect sections without children" do
-        other_section = Aa2Img::AST::Section.new(top: 0, bottom: 2)
+        other_section = AA2img::AST::Section.new(top: 0, bottom: 2)
         other_label = make_label("Header", row: 1)
 
         pos_with = calc.label_position(other_label, box, section: other_section, valign: :center, children: [child])
@@ -77,9 +77,9 @@ RSpec.describe Aa2Img::Layout::Calculator do
     context "multiple labels in a section" do
       let(:scene) { build_scene }
       let(:calc) { described_class.new(scene, theme) }
-      let(:box) { Aa2Img::AST::Box.new(top: 0, left: 0, bottom: 10, right: 38) }
-      let(:child) { Aa2Img::AST::Box.new(top: 5, left: 3, bottom: 9, right: 33) }
-      let(:section) { Aa2Img::AST::Section.new(top: 0, bottom: 10) }
+      let(:box) { AA2img::AST::Box.new(top: 0, left: 0, bottom: 10, right: 38) }
+      let(:child) { AA2img::AST::Box.new(top: 5, left: 3, bottom: 9, right: 33) }
+      let(:section) { AA2img::AST::Section.new(top: 0, bottom: 10) }
       let(:label_a) { make_label("Line A", row: 1) }
       let(:label_b) { make_label("Line B", row: 2) }
 

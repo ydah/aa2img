@@ -2,7 +2,7 @@
 
 require "unicode/display_width"
 
-module Aa2Img
+module AA2img
   class Grid
     attr_reader :rows, :width, :height
 

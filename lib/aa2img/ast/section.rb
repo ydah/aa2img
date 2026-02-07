@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Aa2Img
+module AA2img
   module AST
     class Section < BaseElement
       attr_accessor :top, :bottom

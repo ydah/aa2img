@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-RSpec.describe Aa2Img::Parser::BoxBuilder do
+RSpec.describe AA2img::Parser::BoxBuilder do
   let(:builder) { described_class.new }
-  let(:corner_detector) { Aa2Img::Parser::CornerDetector.new }
+  let(:corner_detector) { AA2img::Parser::CornerDetector.new }
 
   it "detects a simple Unicode box" do
-    grid = Aa2Img::Grid.new("┌──┐\n│  │\n└──┘")
+    grid = AA2img::Grid.new("┌──┐\n│  │\n└──┘")
     corners = corner_detector.detect(grid)
     boxes = builder.detect(grid, corners)
     expect(boxes.size).to eq(1)
@@ -16,7 +16,7 @@ RSpec.describe Aa2Img::Parser::BoxBuilder do
   end
 
   it "detects a simple ASCII box" do
-    grid = Aa2Img::Grid.new("+--+\n|  |\n+--+")
+    grid = AA2img::Grid.new("+--+\n|  |\n+--+")
     corners = corner_detector.detect(grid)
     boxes = builder.detect(grid, corners)
     expect(boxes.size).to eq(1)
@@ -24,14 +24,14 @@ RSpec.describe Aa2Img::Parser::BoxBuilder do
 
   it "detects multiple independent boxes" do
     text = File.read(File.expand_path("../../spec/fixtures/multiple_boxes.txt", __dir__))
-    grid = Aa2Img::Grid.new(text)
+    grid = AA2img::Grid.new(text)
     corners = corner_detector.detect(grid)
     boxes = builder.detect(grid, corners)
     expect(boxes.size).to eq(2)
   end
 
   it "returns empty for no boxes" do
-    grid = Aa2Img::Grid.new("hello world")
+    grid = AA2img::Grid.new("hello world")
     corners = corner_detector.detect(grid)
     boxes = builder.detect(grid, corners)
     expect(boxes).to be_empty

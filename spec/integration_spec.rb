@@ -6,8 +6,8 @@ RSpec.describe "Integration" do
   describe "layered architecture example" do
     it "parses the full example correctly" do
       text = File.read(File.join(fixture_dir, "layered_architecture.txt"))
-      grid = Aa2Img::Grid.new(text)
-      parser = Aa2Img::Parser::Orchestrator.new(grid)
+      grid = AA2img::Grid.new(text)
+      parser = AA2img::Parser::Orchestrator.new(grid)
       scene = parser.parse
 
       top_boxes = scene.boxes
@@ -26,8 +26,8 @@ RSpec.describe "Integration" do
   describe "nested box example" do
     it "detects parent-child relationship" do
       text = File.read(File.join(fixture_dir, "nested_box.txt"))
-      grid = Aa2Img::Grid.new(text)
-      parser = Aa2Img::Parser::Orchestrator.new(grid)
+      grid = AA2img::Grid.new(text)
+      parser = AA2img::Parser::Orchestrator.new(grid)
       scene = parser.parse
 
       top_boxes = scene.boxes
@@ -39,8 +39,8 @@ RSpec.describe "Integration" do
   describe "multiple boxes" do
     it "detects independent boxes" do
       text = File.read(File.join(fixture_dir, "multiple_boxes.txt"))
-      grid = Aa2Img::Grid.new(text)
-      parser = Aa2Img::Parser::Orchestrator.new(grid)
+      grid = AA2img::Grid.new(text)
+      parser = AA2img::Parser::Orchestrator.new(grid)
       scene = parser.parse
 
       expect(scene.boxes.size).to eq(2)
@@ -49,8 +49,8 @@ RSpec.describe "Integration" do
 
   describe "empty input" do
     it "returns empty scene" do
-      grid = Aa2Img::Grid.new("")
-      parser = Aa2Img::Parser::Orchestrator.new(grid)
+      grid = AA2img::Grid.new("")
+      parser = AA2img::Parser::Orchestrator.new(grid)
       scene = parser.parse
       expect(scene.boxes).to be_empty
     end
@@ -59,8 +59,8 @@ RSpec.describe "Integration" do
   describe "no boxes" do
     it "returns empty scene for plain text" do
       text = File.read(File.join(fixture_dir, "no_boxes.txt"))
-      grid = Aa2Img::Grid.new(text)
-      parser = Aa2Img::Parser::Orchestrator.new(grid)
+      grid = AA2img::Grid.new(text)
+      parser = AA2img::Parser::Orchestrator.new(grid)
       scene = parser.parse
       expect(scene.boxes).to be_empty
     end
@@ -69,15 +69,15 @@ RSpec.describe "Integration" do
   describe "SVG end-to-end" do
     it "generates valid SVG from fixture" do
       text = File.read(File.join(fixture_dir, "layered_architecture.txt"))
-      svg = Aa2Img.convert(text, format: :svg)
+      svg = AA2img.convert(text, format: :svg)
       expect(svg).to include("<svg")
       expect(svg).to include("</svg>")
     end
 
     it "generates SVG with all themes" do
       text = File.read(File.join(fixture_dir, "simple_unicode_box.txt"))
-      Aa2Img::Theme.available.each do |theme_name|
-        svg = Aa2Img.convert(text, format: :svg, theme: theme_name)
+      AA2img::Theme.available.each do |theme_name|
+        svg = AA2img.convert(text, format: :svg, theme: theme_name)
         expect(svg).to include("<svg")
       end
     end

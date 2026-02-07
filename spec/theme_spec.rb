@@ -3,7 +3,7 @@
 require "tmpdir"
 require "yaml"
 
-RSpec.describe Aa2Img::Theme do
+RSpec.describe AA2img::Theme do
   describe ".available" do
     it "includes built-in modern theme" do
       expect(described_class.available).to include("modern")

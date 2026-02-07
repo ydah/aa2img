@@ -33,7 +33,7 @@ require_relative "aa2img/renderer/png_renderer"
 require_relative "aa2img/theme"
 require_relative "aa2img/cli"
 
-module Aa2Img
+module AA2img
   class Error < StandardError; end
 
   class << self

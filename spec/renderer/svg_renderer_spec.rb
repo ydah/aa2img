@@ -2,14 +2,14 @@
 
 require "nokogiri"
 
-RSpec.describe Aa2Img::Renderer::SVGRenderer do
+RSpec.describe AA2img::Renderer::SVGRenderer do
   let(:renderer) { described_class.new }
-  let(:theme) { Aa2Img::Theme.new }
+  let(:theme) { AA2img::Theme.new }
 
   def parse_fixture(name)
     text = File.read(File.expand_path("../../spec/fixtures/#{name}", __dir__))
-    grid = Aa2Img::Grid.new(text)
-    parser = Aa2Img::Parser::Orchestrator.new(grid)
+    grid = AA2img::Grid.new(text)
+    parser = AA2img::Parser::Orchestrator.new(grid)
     parser.parse
   end
 
@@ -48,7 +48,7 @@ RSpec.describe Aa2Img::Renderer::SVGRenderer do
   end
 
   it "applies blueprint theme" do
-    blueprint = Aa2Img::Theme.load("blueprint")
+    blueprint = AA2img::Theme.load("blueprint")
     scene = parse_fixture("simple_unicode_box.txt")
     svg = renderer.render(scene, theme: blueprint)
     expect(svg).to include("#1A2744")

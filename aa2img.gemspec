@@ -4,7 +4,7 @@ require_relative "lib/aa2img/version"
 
 Gem::Specification.new do |spec|
   spec.name = "aa2img"
-  spec.version = Aa2Img::VERSION
+  spec.version = AA2img::VERSION
   spec.authors = ["Yudai Takada"]
   spec.email = ["t.yudai92@gmail.com"]
 

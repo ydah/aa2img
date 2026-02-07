@@ -2,7 +2,7 @@
 
 require "yaml"
 
-module Aa2Img
+module AA2img
   class Theme
     DEFAULTS = {
       "name" => "default",

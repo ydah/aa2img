@@ -138,10 +138,10 @@ aa = <<~AA
 AA
 
 # Get SVG string
-svg = Aa2Img.convert(aa, format: :svg, theme: "default", valign: :center)
+svg = AA2img.convert(aa, format: :svg, theme: "default", valign: :center)
 
 # Write to file (format inferred from extension)
-Aa2Img.convert_to_file(aa, "diagram.png", theme: "monochrome", scale: 2, valign: :top)
+AA2img.convert_to_file(aa, "diagram.png", theme: "monochrome", scale: 2, valign: :top)
 ```
 
 ## Diagram Syntax
@@ -214,7 +214,7 @@ custom_theme = {
   "font_family" => "'Noto Sans JP', sans-serif"
 }
 
-svg = Aa2Img.convert(aa, format: :svg, theme: custom_theme)
+svg = AA2img.convert(aa, format: :svg, theme: custom_theme)
 ```
 
 ## Notes

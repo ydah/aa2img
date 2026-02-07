@@ -2,7 +2,7 @@
 
 require "nokogiri"
 
-module Aa2Img
+module AA2img
   module Renderer
     class SVGRenderer < Base
       def render(scene, theme:, valign: :top, **_options)

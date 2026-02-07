@@ -2,7 +2,7 @@
 
 require "thor"
 
-module Aa2Img
+module AA2img
   class CLI < Thor
     desc "convert INPUT_FILE OUTPUT_FILE", "Convert AA text file to image"
     option :theme, type: :string, default: "default", desc: "Theme name or YAML path"
@@ -14,7 +14,7 @@ module Aa2Img
              else
                File.read(input_file)
              end
-      Aa2Img.convert_to_file(text, output_file,
+      AA2img.convert_to_file(text, output_file,
                              theme: options[:theme],
                              scale: options[:scale],
                              valign: options[:valign].to_sym)
@@ -31,14 +31,14 @@ module Aa2Img
     def preview(input_file)
       text = File.read(input_file)
       grid = Grid.new(text)
-      parser = Aa2Img::Parser::Orchestrator.new(grid)
+      parser = AA2img::Parser::Orchestrator.new(grid)
       scene = parser.parse
       puts scene.to_tree_string
     end
 
     desc "version", "Show version"
     def version
-      puts "aa2img #{Aa2Img::VERSION}"
+      puts "aa2img #{AA2img::VERSION}"
     end
   end
 end

@@ -2,7 +2,7 @@
 
 require "tempfile"
 
-module Aa2Img
+module AA2img
   module Renderer
     class PNGRenderer < Base
       def render(scene, theme:, scale: 2, valign: :top, **_options)
