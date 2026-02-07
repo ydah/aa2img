@@ -1,0 +1,18 @@
+name: blueprint
+background_color: "#1A2744"
+box_fill: "#243B6A"
+box_stroke: "#5B9BD5"
+box_stroke_width: 2
+border_radius: 4
+text_color: "#D6E4F0"
+font_family: "'Courier New', monospace"
+font_size: 13
+annotation_font_size: 11
+annotation_color: "#8BB8E0"
+arrow_color: "#5B9BD5"
+nested_box_fill: "#1E3460"
+section_header_fill: "#2A4A7F"
+metrics:
+  cell_width: 10
+  cell_height: 20
+  padding: 20

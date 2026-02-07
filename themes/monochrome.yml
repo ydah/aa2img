@@ -1,0 +1,18 @@
+name: monochrome
+background_color: "#FFFFFF"
+box_fill: "#F5F5F5"
+box_stroke: "#333333"
+box_stroke_width: 2
+border_radius: 4
+text_color: "#111111"
+font_family: "'Helvetica Neue', Helvetica, Arial, sans-serif"
+font_size: 14
+annotation_font_size: 12
+annotation_color: "#666666"
+arrow_color: "#333333"
+nested_box_fill: "#E8E8E8"
+section_header_fill: "#DDDDDD"
+metrics:
+  cell_width: 10
+  cell_height: 20
+  padding: 20
