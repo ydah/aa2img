@@ -32,7 +32,7 @@ It is useful for docs, README files, and architecture notes where you want to ke
 - Renders right-side annotations in `← note` format
 - Handles full-width characters, including Japanese labels
 - Supports `SVG` and `PNG` output
-- Ships with 3 built-in themes: `default`, `blueprint`, `monochrome`
+- Ships with 4 built-in themes: `default`, `blueprint`, `monochrome`, `modern`
 - Supports vertical label alignment: `top`, `center`, `bottom`
 
 ## Installation
@@ -104,7 +104,7 @@ aa2img convert diagram.txt output.png --scale 3
 
 | Option | Description |
 |---|---|
-| `--theme NAME` | Theme name (`default`, `blueprint`, `monochrome`) |
+| `--theme NAME_OR_PATH` | Built-in theme name (`default`, `blueprint`, `monochrome`, `modern`) or YAML file path |
 | `--scale N` | Scale factor for PNG output (default: `2`) |
 | `--valign POS` | Vertical label alignment (`top`, `center`, `bottom`) |
 
@@ -118,6 +118,9 @@ cat diagram.txt | aa2img convert - output.svg
 
 # Use blueprint theme
 aa2img convert diagram.txt blueprint.svg --theme blueprint
+
+# Use custom theme file
+aa2img convert diagram.txt custom.svg --theme ./themes/my-theme.yml
 
 # Center label alignment
 aa2img convert diagram.txt centered.svg --valign center
@@ -188,9 +191,16 @@ Built-in themes:
 - `default`: balanced light theme
 - `blueprint`: deep-blue blueprint-like style
 - `monochrome`: print-friendly grayscale style
+- `modern`: clean, rounded, modern UI style
 
 ```bash
 aa2img themes
+```
+
+CLI also accepts a YAML path for custom themes:
+
+```bash
+aa2img convert diagram.txt output.svg --theme ./themes/my-theme.yml
 ```
 
 You can also pass a custom theme hash from Ruby:

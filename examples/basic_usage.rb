@@ -16,6 +16,6 @@ aa_text = <<~'AA'
 └─────────────────────────────────────┘
 AA
 
-svg = Aa2Img.convert(aa_text, format: :svg, valign: :center)
+svg = Aa2Img.convert(aa_text, format: :svg, valign: :center, theme: :modern)
 File.write("output.svg", svg)
 puts "Generated output.svg"

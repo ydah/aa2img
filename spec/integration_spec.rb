@@ -76,7 +76,7 @@ RSpec.describe "Integration" do
 
     it "generates SVG with all themes" do
       text = File.read(File.join(fixture_dir, "simple_unicode_box.txt"))
-      %w[default blueprint monochrome].each do |theme_name|
+      Aa2Img::Theme.available.each do |theme_name|
         svg = Aa2Img.convert(text, format: :svg, theme: theme_name)
         expect(svg).to include("<svg")
       end

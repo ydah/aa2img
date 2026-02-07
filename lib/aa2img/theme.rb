@@ -50,18 +50,34 @@ module Aa2Img
       when Hash
         new(theme)
       when String, Symbol
-        load_by_name(theme.to_s)
+        load_by_identifier(theme.to_s)
       else
         new
       end
+    end
+
+    def self.load_by_identifier(identifier)
+      if (path = resolve_theme_file_path(identifier))
+        return load_from_path(path)
+      end
+
+      return load_by_name(identifier) if available.include?(identifier)
+
+      raise ArgumentError, "Theme file not found: #{identifier}" if path_like?(identifier)
+
+      raise ArgumentError, "Unknown theme: #{identifier}. Available themes: #{available.join(', ')}"
     end
 
     def self.load_by_name(name)
       path = theme_path(name)
       raise ArgumentError, "Unknown theme: #{name}" unless File.exist?(path)
 
+      load_from_path(path)
+    end
+
+    def self.load_from_path(path)
       config = YAML.safe_load_file(path)
-      new(config)
+      new(config || {})
     end
 
     def self.available
@@ -76,6 +92,19 @@ module Aa2Img
 
     def self.theme_path(name)
       File.join(themes_dir, "#{name}.yml")
+    end
+
+    def self.resolve_theme_file_path(identifier)
+      expanded = File.expand_path(identifier)
+      return expanded if File.file?(expanded)
+
+      nil
+    end
+
+    def self.path_like?(identifier)
+      identifier.include?(File::SEPARATOR) ||
+        identifier.end_with?(".yml", ".yaml") ||
+        identifier.start_with?(".", "~")
     end
 
     private

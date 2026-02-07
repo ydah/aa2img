@@ -5,7 +5,7 @@ require "thor"
 module Aa2Img
   class CLI < Thor
     desc "convert INPUT_FILE OUTPUT_FILE", "Convert AA text file to image"
-    option :theme, type: :string, default: "default", desc: "Theme name"
+    option :theme, type: :string, default: "default", desc: "Theme name or YAML path"
     option :scale, type: :numeric, default: 2, desc: "PNG scale factor"
     option :valign, type: :string, default: "top", desc: "Vertical text alignment (top / center / bottom)"
     def convert(input_file, output_file)
