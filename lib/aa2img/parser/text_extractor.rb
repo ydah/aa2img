@@ -28,9 +28,11 @@ module AA2img
         labels
       end
 
-      def extract_annotations(grid, box)
+      def extract_annotations(grid, box, children: [])
         annotations = []
         (box.top..box.bottom).each do |row|
+          next if row_inside_child?(row, children)
+
           right_text = extract_row_text(grid, row, box.right + 1, grid.width - 1)
           if (match = right_text.match(ANNOTATION_PATTERN))
             annotations << AST::Annotation.new(

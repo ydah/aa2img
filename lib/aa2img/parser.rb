@@ -28,7 +28,7 @@ module AA2img
             section.labels = text_extractor.extract_labels(@grid, section, box, children: box.children)
           end
 
-          box.annotations = text_extractor.extract_annotations(@grid, box)
+          box.annotations = text_extractor.extract_annotations(@grid, box, children: box.children)
 
           box.annotations.each do |ann|
             matching_section = sections.find { |s| ann.row > s.top && ann.row < s.bottom }

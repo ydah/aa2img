@@ -36,7 +36,7 @@ module AA2img
       def all_annotations
         own = annotations || []
         from_sections = (sections || []).flat_map { |s| s.annotation ? [s.annotation] : [] }
-        own + from_sections
+        (own + from_sections).uniq { |ann| [ann.row, ann.arrow_col, ann.text] }
       end
     end
   end

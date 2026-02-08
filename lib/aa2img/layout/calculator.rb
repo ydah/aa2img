@@ -59,7 +59,7 @@ module AA2img
         rect = box_rect(box)
         {
           x: rect[:x] + rect[:width] + 15,
-          y: to_px(annotation.row, 0)[:y] + @metrics.cell_height * 0.7
+          y: to_px(annotation.row, 0)[:y] + @metrics.cell_height * 0.5
         }
       end
 

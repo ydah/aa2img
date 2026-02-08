@@ -39,6 +39,52 @@ RSpec.describe AA2img::Renderer::SVGRenderer do
     expect(rects.size).to be >= 3
   end
 
+  it "renders layered architecture annotations once each" do
+    scene = parse_fixture("layered_architecture.txt")
+    svg = renderer.render(scene, theme: theme)
+    doc = Nokogiri::XML(svg)
+
+    annotations = doc.css("text").map(&:text).select { |text| text.start_with?("← ") }
+    counts = annotations.each_with_object(Hash.new(0)) { |text, tally| tally[text] += 1 }
+
+    expect(counts["← ユーザーとの対話"]).to eq(1)
+    expect(counts["← コマンド解析"]).to eq(1)
+    expect(counts["← コア機能"]).to eq(1)
+    expect(counts["← データ保存"]).to eq(1)
+  end
+
+  it "renders annotations with middle baseline alignment" do
+    scene = parse_fixture("layered_architecture.txt")
+    svg = renderer.render(scene, theme: theme)
+    doc = Nokogiri::XML(svg)
+
+    annotation_texts = doc.css("text").select { |node| node.text.start_with?("← ") }
+    expect(annotation_texts).not_to be_empty
+    expect(annotation_texts.map { |node| node["dominant-baseline"] }.uniq).to eq(["middle"])
+  end
+
+  it "aligns annotation y with corresponding labels" do
+    scene = parse_fixture("layered_architecture.txt")
+    svg = renderer.render(scene, theme: theme, valign: :center)
+    doc = Nokogiri::XML(svg)
+
+    pairs = {
+      "REPL (UI)" => "← ユーザーとの対話",
+      "Command Parser" => "← コマンド解析",
+      "Database" => "← コア機能",
+      "StringHashMap" => "← データ保存"
+    }
+
+    pairs.each do |label_text, annotation_text|
+      label_node = doc.css("text").find { |node| node.text == label_text }
+      annotation_node = doc.css("text").find { |node| node.text == annotation_text }
+
+      expect(label_node).not_to be_nil
+      expect(annotation_node).not_to be_nil
+      expect(annotation_node["y"].to_f).to be_within(0.1).of(label_node["y"].to_f)
+    end
+  end
+
   it "includes section divider lines" do
     scene = parse_fixture("sectioned_box.txt")
     svg = renderer.render(scene, theme: theme)

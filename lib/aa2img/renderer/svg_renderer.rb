@@ -113,8 +113,11 @@ module AA2img
 
         box.all_annotations.each do |ann|
           pos = calc.annotation_position(ann, box)
+          label_y = aligned_annotation_y(ann, box, calc)
+          pos[:y] = label_y if label_y
           xml.text_(
             x: pos[:x], y: pos[:y],
+            "dominant-baseline": "middle",
             "font-family": theme.font_family,
             "font-size": theme.annotation_font_size,
             fill: theme.annotation_color,
@@ -142,6 +145,34 @@ module AA2img
         attrs["marker-start"] = "url(#arrowhead-reverse)" if %i[backward both].include?(edge.arrow)
 
         xml.line(**attrs)
+      end
+
+      def aligned_annotation_y(annotation, box, calc)
+        section = matching_annotation_section(annotation, box)
+        return nil unless section
+        return nil if (section.labels || []).empty?
+
+        label = section.labels.first
+        calc.label_position(
+          label, box,
+          section: section,
+          valign: @valign,
+          label_index: 0,
+          label_count: section.labels.size,
+          children: box.children || []
+        )[:y]
+      end
+
+      def matching_annotation_section(annotation, box)
+        key = annotation_key(annotation)
+        (box.sections || []).find do |section|
+          ann = section.annotation
+          ann && annotation_key(ann) == key
+        end
+      end
+
+      def annotation_key(annotation)
+        [annotation.row, annotation.arrow_col, annotation.text]
       end
     end
   end

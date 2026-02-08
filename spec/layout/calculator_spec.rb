@@ -100,4 +100,18 @@ RSpec.describe AA2img::Layout::Calculator do
       end
     end
   end
+
+  describe "#annotation_position" do
+    let(:scene) { build_scene }
+    let(:calc) { described_class.new(scene, theme) }
+    let(:box) { AA2img::AST::Box.new(top: 0, left: 0, bottom: 4, right: 20) }
+    let(:annotation) { AA2img::AST::Annotation.new(text: "note", row: 2, arrow_col: 21) }
+
+    it "centers annotation vertically within its row" do
+      pos = calc.annotation_position(annotation, box)
+      expected_center_y = padding + annotation.row * cell_height + cell_height * 0.5
+
+      expect(pos[:y]).to eq(expected_center_y)
+    end
+  end
 end
